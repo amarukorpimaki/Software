@@ -33,7 +33,7 @@ _, thresh = cv.threshold(img, 127, 255, cv.THRESH_BINARY)
 # Crea ventana de nombre 'image'
 cv.namedWindow('image')
 
-# Crea trackbars para manejar el tamaño del filtro
+# Crea trackbars para manejar el tamano del filtro
 cv.createTrackbar('Tamaño', 'image', 1, 50, morphological)
 
 # Crea switch para elegir la operacion morfologica
