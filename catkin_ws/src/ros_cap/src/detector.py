@@ -7,6 +7,7 @@ from sensor_msgs.msg import Image # importar mensajes de ROS tipo Image
 import cv2 # importar libreria opencv
 from cv_bridge import CvBridge # importar convertidor de formato de imagenes
 import numpy as np # importar libreria numpy
+from geometry_msgs import Point
 
 
 class Template(object):
@@ -17,7 +18,7 @@ class Template(object):
 		self.publisher=rospy.Publisher("instagram", Image, queue_size=10)
 		self.pub_equalizada=rospy.Publisher("equalizada", Image, queue_size=10)
 		self.pub_imagen=rospy.Publisher("imagen", Image, queue_size=10)
-
+		self.pub_point=rospy.publisher("Point", Point, queue_size=10)
 
 
 	def callback(self,msg):
@@ -50,8 +51,8 @@ class Template(object):
 		#return image_out
 	def procesar_img(self, img):
 		
-		#self.fx=165.1926389508671
-		#self.fy=167.42725035374085
+		self.fx=165.1926389508671
+		self.fy=167.42725035374085
 		
 		# Cambiar espacio de color
 		image_out=cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -75,10 +76,15 @@ class Template(object):
 				cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2) #Dibujar rectangulo
 		
 			#calcular distancia al pato
-			#dz=(self.fx*3.9)/w
-			#dy=(self.fy*3.0)/h
-		
-
+			dz=(self.fx*3.9)/w
+			dy=(self.fy*3.0)/h
+			U= x+w/2
+			V= y+h/2
+			point=Point()
+			point.x= ((U-165.66522940282505)/165.1926389508671)*dy
+			point.y= ((V-120.29518828841765)/167.42725035374085)*dy
+			point.z= dy
+			self.pub_point.pubish(point)
 
 		# Publicar imagen final
 
